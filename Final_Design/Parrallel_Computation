@@ -1,0 +1,229 @@
+`timescale 1ns / 1ps
+
+module Parallel_computation(
+    input  wire        clk,           
+    input  wire        rst,
+    input  wire        Fin_W_A, Fin_W_B, Fin_W_C,        
+    input  wire [31:0] W_in_hash_A, W_in_hash_B, W_in_hash_C,   
+    input  wire [31:0] K_t, 
+    input  wire [31:0] in_hash,
+    output reg         const_sig,            
+    output reg         done,
+    output reg         found_A, found_B, found_C,
+    output reg         Signal_W_A, Signal_W_B, Signal_W_C          
+);
+
+    // --- SHA-256 Logic (Using Functions for cleaner Synthesis) ---
+    function [31:0] ROTR(input [31:0] x, input [4:0] n);
+        ROTR = (x >> n) | (x << (32 - n));
+    endfunction
+
+    function [31:0] Sigma0(input [31:0] x);
+        Sigma0 = ROTR(x, 2) ^ ROTR(x, 13) ^ ROTR(x, 22);
+    endfunction
+
+    function [31:0] Sigma1(input [31:0] x);
+        Sigma1 = ROTR(x, 6) ^ ROTR(x, 11) ^ ROTR(x, 25);
+    endfunction
+
+    function [31:0] Choice(input [31:0] e, input [31:0] f, input [31:0] g);
+        Choice = (e & f) ^ (~e & g);
+    endfunction
+
+    function [31:0] Majority(input [31:0] a, input [31:0] b, input [31:0] c);
+        Majority = (a & b) ^ (a & c) ^ (b & c);
+    endfunction
+
+    // --- Registers ---
+    reg [31:0] tempA_W, tempB_W, tempC_W;
+    reg [31:0] k_temp, const_ex;
+    reg [7:0]  round_counter;
+    reg [2:0]  state;
+    reg [31:0] aA, bA, cA, dA, eA, fA, gA, hA;
+    reg [31:0] aB, bB, cB, dB, eB, fB, gB, hB;
+    reg [31:0] aC, bC, cC, dC, eC, fC, gC, hC;
+    reg [31:0] original_hash [7:0];
+    reg [31:0] T11_A, T12_A, T2_A, T_CA;
+    reg [31:0] T11_B, T12_B, T2_B, T_CB;
+    reg [31:0] T11_C, T12_C, T2_C, T_CC;
+    reg [3:0]  hash_load_counter;
+    reg [1:0]  check;
+
+    reg start_A_0, start_A_1, start_B_0, start_B_1, start_C_0, start_C_1;
+    reg [1:0] clk_A, clk_A_1, clk_B, clk_B_1, clk_C, clk_C_1;
+
+    localparam S_IDLE   = 3'b000, S_LOAD   = 3'b001, S_WAIT_W = 3'b010; 
+    localparam S_RUN    = 3'b011, S_PIPE   = 3'b100, S_QUAD   = 3'b101;
+    localparam S_COMP   = 3'b110, S_END    = 3'b111;
+
+
+    always @(posedge clk) begin
+        if (rst) begin
+            state <= S_LOAD;
+            hash_load_counter <= 0;
+            done <= 1;
+            {found_A, found_B, found_C, check} <= 0;
+            start_A_0 <= 0;
+        end else begin
+            case (state)
+                S_LOAD: begin
+                    if (hash_load_counter < 8) begin
+                        done <= 0;
+                        original_hash[hash_load_counter] <= in_hash;
+                        hash_load_counter <= hash_load_counter + 1;
+                    end else begin
+                        {aA, bA, cA, dA, eA, fA, gA, hA} <= {32'h6a09e667, 32'hbb67ae85, 32'h3c6ef372, 32'ha54ff53a, 32'h510e527f, 32'h9b05688c, 32'h1f83d9ab, 32'h5be0cd19};
+                        {aB, bB, cB, dB, eB, fB, gB, hB} <= {32'h6a09e667, 32'hbb67ae85, 32'h3c6ef372, 32'ha54ff53a, 32'h510e527f, 32'h9b05688c, 32'h1f83d9ab, 32'h5be0cd19};
+                        {aC, bC, cC, dC, eC, fC, gC, hC} <= {32'h6a09e667, 32'hbb67ae85, 32'h3c6ef372, 32'ha54ff53a, 32'h510e527f, 32'h9b05688c, 32'h1f83d9ab, 32'h5be0cd19};
+                        if (Fin_W_A && Fin_W_B && Fin_W_C) state <= S_WAIT_W;
+                        else state <= S_IDLE;
+                    end
+                end
+
+                S_IDLE: if (Fin_W_A && Fin_W_B && Fin_W_C) state <= S_WAIT_W;
+
+                S_WAIT_W: state <= S_RUN;
+
+                S_RUN: begin
+                    start_A_0 <= 1;
+                    state <= S_PIPE;
+                end
+
+                S_PIPE: begin
+                    if (round_counter >= 8'd64) begin
+                        start_A_0 <= 0;
+                        if (clk_C_1 == 2'b10) begin
+                            check <= check + 1;
+                            state <= (check < 3) ? S_QUAD : S_COMP;
+                        end
+                    end
+                end
+
+                S_COMP: begin
+                    found_A <= ({aA,bA,cA,dA,eA,fA,gA,hA} <= {original_hash[0],original_hash[1],original_hash[2],original_hash[3],original_hash[4],original_hash[5],original_hash[6],original_hash[7]});
+                    found_B <= ({aB,bB,cB,dB,eB,fB,gB,hB} <= {original_hash[0],original_hash[1],original_hash[2],original_hash[3],original_hash[4],original_hash[5],original_hash[6],original_hash[7]});
+                    found_C <= ({aC,bC,cC,dC,eC,fC,gC,hC} <= {original_hash[0],original_hash[1],original_hash[2],original_hash[3],original_hash[4],original_hash[5],original_hash[6],original_hash[7]});
+                    state <= S_END;
+                end
+
+                S_END:  done <= 1;
+                S_QUAD: state <= S_IDLE;
+                default: state <= S_IDLE;
+            endcase
+        end
+    end
+
+    // --- Pipeline Logic Stage A ---
+    always @(posedge clk) begin
+        if (rst || state == S_LOAD) begin
+            round_counter <= 0;
+            {clk_A, clk_A_1, start_A_1, start_B_0} <= 0;
+            {Signal_W_A, const_sig} <= 0;
+        end else if (state == S_PIPE && start_A_0) begin
+            case(clk_A)
+                2'b00: begin
+                    T11_A <= K_t + W_in_hash_A + hA; 
+                    T12_A <= Sigma1(eA) + Choice(eA, fA, gA);
+                    round_counter <= round_counter + 1;
+                    start_A_1 <= 1; start_B_0 <= 1; clk_A <= 2'b01;
+                    Signal_W_A <= 0; const_sig <= 0;
+                end
+                2'b01: begin
+                    T2_A <= Majority(aA, bA, cA) + Sigma0(aA); 
+                    T_CA <= cA;
+                    Signal_W_A <= 1; const_sig <= 1; clk_A <= 2'b10;
+                end
+                2'b10: begin
+                    dA <= T_CA; 
+                    tempA_W <= W_in_hash_A; k_temp <= K_t;
+                    Signal_W_A <= 0; const_sig <= 0; clk_A <= 2'b00;
+                end
+            endcase
+
+            if (start_A_1) begin
+                case(clk_A_1)
+                    2'b00: begin fA <= eA; gA <= fA; hA <= gA; clk_A_1 <= 2'b01; end
+                    2'b01: begin bA <= aA; cA <= bA; clk_A_1 <= 2'b10; end
+                    2'b10: begin 
+                        eA <= (T11_A + T12_A) + dA; 
+                        aA <= (T11_A + T12_A) + T2_A; 
+                        clk_A_1 <= 2'b00; 
+                    end
+                endcase
+            end
+        end
+    end
+
+    // --- Pipeline Logic Stage B ---
+    always @(posedge clk) begin
+        if (rst || state == S_LOAD) begin
+            {clk_B, clk_B_1, start_B_1, start_C_0} <= 0;
+            Signal_W_B <= 0;
+        end else if (state == S_PIPE && start_B_0) begin
+            case (clk_B)
+                2'b00: begin
+                    T11_B <= k_temp + W_in_hash_B + hB; 
+                    T12_B <= Sigma1(eB) + Choice(eB, fB, gB);
+                    start_B_1 <= 1; start_C_0 <= 1; clk_B <= 2'b01;
+                end
+                2'b01: begin
+                    T2_B <= Majority(aB, bB, cB) + Sigma0(aB); 
+                    T_CB <= cB;
+                    Signal_W_B <= 1; clk_B <= 2'b10;
+                end
+                2'b10: begin
+                    dB <= T_CB; tempB_W <= W_in_hash_B; Signal_W_B <= 0; clk_B <= 2'b00;
+                end
+            endcase
+
+            if (start_B_1) begin
+                case (clk_B_1)
+                    2'b00: begin fB <= eB; gB <= fB; hB <= gB; clk_B_1 <= 2'b01; end
+                    2'b01: begin bB <= aB; cB <= bB; clk_B_1 <= 2'b10; end
+                    2'b10: begin 
+                        eB <= (T11_B + T12_B) + dB; 
+                        aB <= (T11_B + T12_B) + T2_B; 
+                        clk_B_1 <= 2'b00; 
+                    end
+                endcase
+            end
+        end
+    end
+
+    // --- Pipeline Logic Stage C ---
+    always @(posedge clk) begin
+        if (rst || state == S_LOAD) begin
+            {clk_C, clk_C_1, start_C_1} <= 0;
+            Signal_W_C <= 0;
+            const_ex <= 0;
+        end else if (state == S_PIPE && start_C_0) begin
+            case (clk_C)
+                2'b00: begin
+                    T11_C <= k_temp + W_in_hash_C + hC; 
+                    T12_C <= Sigma1(eC) + Choice(eC, fC, gC);
+                    start_C_1 <= 1; clk_C <= 2'b01;
+                end
+                2'b01: begin
+                    T2_C <= Majority(aC, bC, cC) + Sigma0(aC); 
+                    T_CC <= cC;
+                    Signal_W_C <= 1; clk_C <= 2'b10;
+                end
+                2'b10: begin
+                    dC <= T_CC; const_ex <= k_temp; tempC_W <= W_in_hash_C; Signal_W_C <= 0; clk_C <= 2'b00;
+                end
+            endcase
+
+            if (start_C_1) begin
+                case (clk_C_1)
+                    2'b00: begin fC <= eC; gC <= fC; hC <= gC; clk_C_1 <= 2'b01; end
+                    2'b01: begin bC <= aC; cC <= bC; clk_C_1 <= 2'b10; end
+                    2'b10: begin 
+                        eC <= (T11_C + T12_C) + dC; 
+                        aC <= (T11_C + T12_C) + T2_C; 
+                        clk_C_1 <= 2'b00; 
+                    end
+                endcase
+            end
+        end
+    end
+endmodule

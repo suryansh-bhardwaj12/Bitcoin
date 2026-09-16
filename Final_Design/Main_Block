@@ -1,0 +1,98 @@
+`timescale 1ns / 1ps
+
+module Main_Block(
+    input wire clk, 
+    input wire rst,
+    input wire [31:0] DATA_IN,
+    input wire stop_sig, 
+    input wire Signal_W,
+    output reg start_sig, 
+    output reg Com_W,
+    output reg [31:0] DATA_OUT
+);
+
+    localparam S_IDLE = 2'd0;
+    localparam S_RCV  = 2'd1;
+    localparam S_EXP  = 2'd2;
+    localparam S_SEND = 2'd3;
+
+    reg [1:0] state;
+    reg [5:0] count, out_ptr;
+    reg [31:0] W [63:0];
+    reg prev_sig_W;
+    function [31:0] s0 (input [31:0] x); 
+        s0 = {x[6:0], x[31:7]} ^ {x[17:0], x[31:18]} ^ (x >> 3); 
+    endfunction
+
+    function [31:0] s1 (input [31:0] x); 
+        s1 = {x[16:0], x[31:17]} ^ {x[18:0], x[31:19]} ^ (x >> 10); 
+    endfunction
+
+    integer k;
+
+    always @(posedge clk) begin
+        if (rst) begin
+            state <= S_IDLE;
+            start_sig <= 0;
+            Com_W <= 0;
+            prev_sig_W <= 0;
+            DATA_OUT <= 0;
+            count <= 0;
+            out_ptr <= 0;
+            for (k = 0; k < 64; k = k + 1) begin
+                W[k] <= 32'h0;
+            end
+        end else begin
+            prev_sig_W <= Signal_W;
+            
+            case (state)
+                S_IDLE: begin
+                    Com_W <= 0;
+                    out_ptr <= 0;
+                    if (stop_sig == 1'b0) begin 
+                        start_sig <= 1'b1; 
+                        state <= S_RCV; 
+                        count <= 0; 
+                    end
+                end
+
+                S_RCV: begin
+                    W[count] <= DATA_IN;
+                    if (count == 15) begin 
+                        start_sig <= 1'b0; 
+                        state <= S_EXP; 
+                        count <= 6'd16; 
+                    end else begin
+                        count <= count + 1;
+                    end
+                end
+
+                S_EXP: begin
+                    // SHA-256 expansion: W[i] = s1(W[i-2]) + W[i-7] + s0(W[i-15]) + W[i-16]
+                    W[count] <= s1(W[count-2]) + W[count-7] + s0(W[count-15]) + W[count-16];
+                    if (count == 63) begin 
+                        Com_W <= 1'b1; 
+                        state <= S_SEND; 
+                        out_ptr <= 0; 
+                    end else begin
+                        count <= count + 1;
+                    end
+                end
+
+                S_SEND: begin
+                    if (Signal_W) begin
+                        DATA_OUT <= W[out_ptr];
+                        if (out_ptr == 63) begin 
+                            state <= S_IDLE; 
+                            Com_W <= 1'b0; 
+                        end else begin
+                            out_ptr <= out_ptr + 1;
+                        end
+                    end
+                end
+                
+                default: state <= S_IDLE;
+            endcase
+        end
+    end
+endmodule
