@@ -1,0 +1,51 @@
+`timescale 1ns / 1ps
+
+module k_const(
+    input wire clk,
+    input wire rst,
+    input wire const_sig,    
+    output reg [31:0] K_out
+);
+
+    reg [5:0] addr;
+    reg const_sig_prev;
+    wire const_sig_posedge = (const_sig && !const_sig_prev);
+    reg [31:0] k_rom [0:63];
+
+    initial begin
+        k_rom[0]  = 32'h428a2f98; k_rom[1]  = 32'h71374491; k_rom[2]  = 32'hB5C0FBCF; k_rom[3]  = 32'hE9B5DBA5;
+        k_rom[4]  = 32'h3956C25B; k_rom[5]  = 32'h59F111F1; k_rom[6]  = 32'h923F82A4; k_rom[7]  = 32'hAB1C5ED5;
+        k_rom[8]  = 32'hD807AA98; k_rom[9]  = 32'h12835B01; k_rom[10] = 32'h243185BE; k_rom[11] = 32'h550C7DC3;
+        k_rom[12] = 32'h72BE5D74; k_rom[13] = 32'h80DEB1FE; k_rom[14] = 32'h9BDC06A7; k_rom[15] = 32'hC19BF174;
+        k_rom[16] = 32'hE49B69C1; k_rom[17] = 32'hEFBE4786; k_rom[18] = 32'h0FC19DC6; k_rom[19] = 32'h240CA1CC;
+        k_rom[20] = 32'h2DE92C6F; k_rom[21] = 32'h4A7484AA; k_rom[22] = 32'h5CB0A9DC; k_rom[23] = 32'h76F988DA;
+        k_rom[24] = 32'h983E5152; k_rom[25] = 32'hA831C66D; k_rom[26] = 32'hB00327C8; k_rom[27] = 32'hBF597FC7;
+        k_rom[28] = 32'hC6E00BF3; k_rom[29] = 32'hD5A79147; k_rom[30] = 32'h06CA6351; k_rom[31] = 32'h14292967;
+        k_rom[32] = 32'h27B70A85; k_rom[33] = 32'h2E1B2138; k_rom[34] = 32'h4D2C6DFC; k_rom[35] = 32'h53380D13;
+        k_rom[36] = 32'h650A7354; k_rom[37] = 32'h766A0ABB; k_rom[38] = 32'h81C2C92E; k_rom[39] = 32'h92722C85;
+        k_rom[40] = 32'hA2BFE8A1; k_rom[41] = 32'hA81A664B; k_rom[42] = 32'hC24B8B70; k_rom[43] = 32'hC76C51A3;
+        k_rom[44] = 32'hD192E819; k_rom[45] = 32'hD6990624; k_rom[46] = 32'hF40E3585; k_rom[47] = 32'h106AA070;
+        k_rom[48] = 32'h19A4C116; k_rom[49] = 32'h1E376C08; k_rom[50] = 32'h2748774C; k_rom[51] = 32'h34B0BCB5;
+        k_rom[52] = 32'h391C0CB3; k_rom[53] = 32'h4ED8AA4A; k_rom[54] = 32'h5B9CCA4F; k_rom[55] = 32'h682E6FF3;
+        k_rom[56] = 32'h748F82EE; k_rom[57] = 32'h78A5636F; k_rom[58] = 32'h84C87814; k_rom[59] = 32'h8CC70208;
+        k_rom[60] = 32'h90BEFFFA; k_rom[61] = 32'hA4506CEB; k_rom[62] = 32'hBEF9A3F7; k_rom[63] = 32'hC67178F2;
+    end
+
+    always @(posedge clk) begin
+        if (rst) begin
+            addr <= 0;
+            const_sig_prev <= 0;
+            K_out <= k_rom[0];
+        end else begin
+            const_sig_prev <= const_sig;
+            
+            if (const_sig_posedge) begin
+                K_out <= k_rom[addr];
+                if (addr == 6'd63)
+                    addr <= 0;
+                else
+                    addr <= addr + 1;
+            end
+        end
+    end
+endmodule

@@ -1,0 +1,115 @@
+{
+   ExpandedHierarchyInLayout: "",
+   guistr: "# # String gsaved with Nlview 6.6.11  2017-06-12 bk=1.3860 VDI=40 GEI=35 GUI=JA:1.6
+#  -string -flagsOSRD
+preplace port DDR -pg 1 -y 1460 -defaultsOSRD
+preplace port FIXED_IO -pg 1 -y 1480 -defaultsOSRD
+preplace portBus LED_1 -pg 1 -y 1220 -defaultsOSRD
+preplace portBus LED_2 -pg 1 -y 1310 -defaultsOSRD
+preplace portBus LED_3 -pg 1 -y 1400 -defaultsOSRD
+preplace inst Main_Block_3 -pg 1 -lvl 2 -y 260 -defaultsOSRD
+preplace inst xlslice_0 -pg 1 -lvl 7 -y 1220 -defaultsOSRD
+preplace inst Main_Block_4 -pg 1 -lvl 2 -y 430 -defaultsOSRD
+preplace inst xlslice_1 -pg 1 -lvl 7 -y 1310 -defaultsOSRD
+preplace inst Main_Block_5 -pg 1 -lvl 2 -y 960 -defaultsOSRD
+preplace inst xlslice_2 -pg 1 -lvl 7 -y 1400 -defaultsOSRD
+preplace inst COMMUNICATION_BLOCK_0 -pg 1 -lvl 6 -y 1080 -defaultsOSRD
+preplace inst Parallel_computation_0 -pg 1 -lvl 3 -y 610 -defaultsOSRD
+preplace inst axi_gpio_0 -pg 1 -lvl 6 -y 1250 -defaultsOSRD
+preplace inst Parallel_computation_1 -pg 1 -lvl 3 -y 910 -defaultsOSRD
+preplace inst xlconcat_0 -pg 1 -lvl 4 -y 480 -defaultsOSRD
+preplace inst axi_gpio_1 -pg 1 -lvl 6 -y 1390 -defaultsOSRD
+preplace inst xlconcat_1 -pg 1 -lvl 4 -y 870 -defaultsOSRD
+preplace inst xlconcat_2 -pg 1 -lvl 4 -y 1040 -defaultsOSRD
+preplace inst xlconcat_3 -pg 1 -lvl 6 -y 920 -defaultsOSRD
+preplace inst LOGIC_BLOCK_0 -pg 1 -lvl 5 -y 900 -defaultsOSRD
+preplace inst k_const_0 -pg 1 -lvl 2 -y 1170 -defaultsOSRD
+preplace inst ps7_0_axi_periph -pg 1 -lvl 5 -y 1280 -defaultsOSRD
+preplace inst k_const_1 -pg 1 -lvl 2 -y 1330 -defaultsOSRD
+preplace inst Main_Block_0 -pg 1 -lvl 2 -y 90 -defaultsOSRD
+preplace inst rst_ps7_0_100M -pg 1 -lvl 4 -y 1330 -defaultsOSRD
+preplace inst Main_Block_1 -pg 1 -lvl 2 -y 600 -defaultsOSRD
+preplace inst de_concant_0 -pg 1 -lvl 1 -y 650 -defaultsOSRD
+preplace inst processing_system7_0 -pg 1 -lvl 4 -y 1510 -defaultsOSRD
+preplace inst Main_Block_2 -pg 1 -lvl 2 -y 790 -defaultsOSRD
+preplace netloc LOGIC_BLOCK_0_SUCCESS_SIG 1 5 1 2270
+preplace netloc xlslice_2_Dout 1 7 1 NJ
+preplace netloc Main_Block_1_Com_W 1 2 1 720
+preplace netloc de_concant_0_b2 1 1 1 260
+preplace netloc de_concant_0_b3 1 1 1 250
+preplace netloc LOGIC_BLOCK_0_load_Padded_values 1 5 1 N
+preplace netloc de_concant_0_b4 1 1 1 270
+preplace netloc processing_system7_0_FIXED_IO 1 4 4 NJ 1480 NJ 1480 NJ 1480 NJ
+preplace netloc axi_gpio_1_gpio_io_o 1 6 1 2600
+preplace netloc rst_ps7_0_100M_peripheral_aresetn 1 4 2 1780 1450 2280
+preplace netloc de_concant_0_b5 1 1 1 240
+preplace netloc xlconcat_2_dout 1 4 1 1730
+preplace netloc Main_Block_0_start_sig 1 2 2 NJ 70 1330
+preplace netloc ps7_0_axi_periph_M02_AXI 1 5 1 2240
+preplace netloc Main_Block_0_Com_W 1 2 1 850
+preplace netloc xlconcat_1_dout 1 4 1 1740
+preplace netloc Main_Block_5_Com_W 1 2 1 820
+preplace netloc xlconcat_0_dout 1 4 1 1780
+preplace netloc Main_Block_3_Com_W 1 2 1 780
+preplace netloc Main_Block_1_start_sig 1 2 2 690 470 NJ
+preplace netloc Main_Block_3_start_sig 1 2 2 NJ 240 1320
+preplace netloc processing_system7_0_DDR 1 4 4 NJ 1460 NJ 1460 NJ 1460 NJ
+preplace netloc LOGIC_BLOCK_0_rst_value 1 1 5 290 1060 800 1110 NJ 1110 NJ 1110 2240
+preplace netloc Main_Block_4_start_sig 1 2 2 NJ 410 1310
+preplace netloc Parallel_computation_1_const_sig 1 1 3 350 1400 NJ 1400 1250
+preplace netloc ps7_0_axi_periph_M00_AXI 1 5 1 2250
+preplace netloc processing_system7_0_FCLK_RESET0_N 1 3 2 1320 1610 1760
+preplace netloc LOGIC_BLOCK_0_init_hash 1 2 4 850 1060 1330J 980 1740J 1030 2230
+preplace netloc xlslice_1_Dout 1 7 1 NJ
+preplace netloc ps7_0_axi_periph_M01_AXI 1 5 1 2260
+preplace netloc Main_Block_2_start_sig 1 2 2 710 450 NJ
+preplace netloc Main_Block_2_Com_W 1 2 1 730
+preplace netloc Parallel_computation_0_found_A 1 3 1 1330
+preplace netloc LOGIC_BLOCK_0_WINNING_NONCE 1 5 1 2280
+preplace netloc LOGIC_BLOCK_0_load_init_hash 1 5 1 N
+preplace netloc rst_ps7_0_100M_peripheral_reset 1 4 1 1730
+preplace netloc xlslice_0_Dout 1 7 1 NJ
+preplace netloc LOGIC_BLOCK_0_H_end 1 5 1 N
+preplace netloc k_const_0_K_out 1 2 1 810
+preplace netloc Parallel_computation_0_found_B 1 3 1 1300
+preplace netloc Parallel_computation_0_found_C 1 3 1 1290
+preplace netloc COMMUNICATION_BLOCK_0_rst 1 4 3 1790 1440 2290J 1320 2580
+preplace netloc rst_ps7_0_100M_interconnect_aresetn 1 4 1 1770
+preplace netloc Parallel_computation_1_Signal_W_A 1 1 3 310 1080 NJ 1080 1200
+preplace netloc Parallel_computation_1_Signal_W_B 1 1 3 320 1090 NJ 1090 1190
+preplace netloc Parallel_computation_1_done 1 3 1 1280
+preplace netloc Main_Block_5_DATA_OUT 1 2 1 830
+preplace netloc Parallel_computation_1_Signal_W_C 1 1 3 340 1250 NJ 1250 1210
+preplace netloc processing_system7_0_FCLK_CLK0 1 1 5 280 1050 790 1050 1270 1120 1750 1490 2270
+preplace netloc Main_Block_3_DATA_OUT 1 2 1 760
+preplace netloc k_const_1_K_out 1 2 1 840
+preplace netloc Main_Block_2_DATA_OUT 1 2 1 770
+preplace netloc Parallel_computation_0_done 1 3 1 1310
+preplace netloc Parallel_computation_0_Signal_W_A 1 1 3 350 690 740J 760 1230
+preplace netloc LOGIC_BLOCK_0_PADDED_VALUES 1 1 5 300 700 720J 770 NJ 770 NJ 770 2220
+preplace netloc Parallel_computation_0_Signal_W_B 1 1 3 330 1240 NJ 1240 1240
+preplace netloc Parallel_computation_0_Signal_W_C 1 1 3 350 1070 NJ 1070 1220
+preplace netloc Main_Block_0_DATA_OUT 1 2 1 810
+preplace netloc Main_Block_4_Com_W 1 2 1 750
+preplace netloc Main_Block_4_DATA_OUT 1 2 1 700
+preplace netloc Parallel_computation_0_const_sig 1 1 3 350 1260 NJ 1260 1260
+preplace netloc xlconcat_3_dout 1 6 1 2590
+preplace netloc processing_system7_0_M_AXI_GP0 1 4 1 1760
+preplace netloc LOGIC_BLOCK_0_stop_sig 1 0 6 20 1100 NJ 1100 NJ 1100 NJ 1100 NJ 1100 2220
+preplace netloc Main_Block_5_start_sig 1 2 2 690 750 1320J
+preplace netloc Main_Block_1_DATA_OUT 1 2 1 770
+preplace netloc COMMUNICATION_BLOCK_0_DATA 1 4 3 1800 1120 2260J 1180 2570
+preplace netloc Parallel_computation_1_found_A 1 3 1 N
+preplace netloc de_concant_0_b0 1 1 1 240
+preplace netloc Parallel_computation_1_found_B 1 3 1 N
+preplace netloc de_concant_0_b1 1 1 1 N
+preplace netloc Parallel_computation_1_found_C 1 3 1 N
+levelinfo -pg 1 0 130 520 1020 1530 2010 2430 2700 2820 -top 0 -bot 1620
+",
+}
+{
+   da_axi4_cnt: "7",
+   da_board_cnt: "3",
+   da_clkrst_cnt: "25",
+   da_ps7_cnt: "3",
+}

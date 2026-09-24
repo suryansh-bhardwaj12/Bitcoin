@@ -1,0 +1,54 @@
+{
+   ExpandedHierarchyInLayout: "",
+   guistr: "# # String gsaved with Nlview 6.6.11  2017-06-12 bk=1.3860 VDI=40 GEI=35 GUI=JA:1.6
+#  -string -flagsOSRD
+preplace port rst_0 -pg 1 -y 530 -defaultsOSRD
+preplace port rst_1 -pg 1 -y 70 -defaultsOSRD
+preplace port done_0 -pg 1 -y 360 -defaultsOSRD
+preplace port stop_sig_0 -pg 1 -y 680 -defaultsOSRD
+preplace port found_C_0 -pg 1 -y 420 -defaultsOSRD
+preplace port clk_0 -pg 1 -y 50 -defaultsOSRD
+preplace port found_A_0 -pg 1 -y 380 -defaultsOSRD
+preplace port start_sig_0 -pg 1 -y 210 -defaultsOSRD
+preplace port start_sig_1 -pg 1 -y 640 -defaultsOSRD
+preplace port start_sig_2 -pg 1 -y 550 -defaultsOSRD
+preplace port found_B_0 -pg 1 -y 400 -defaultsOSRD
+preplace portBus in_hash_0 -pg 1 -y 550 -defaultsOSRD
+preplace portBus DATA_IN_0 -pg 1 -y 230 -defaultsOSRD
+preplace portBus DATA_IN_1 -pg 1 -y 660 -defaultsOSRD
+preplace portBus DATA_IN_2 -pg 1 -y 440 -defaultsOSRD
+preplace inst Main_Block_A -pg 1 -lvl 1 -y 230 -defaultsOSRD
+preplace inst Main_Block_B -pg 1 -lvl 1 -y 440 -defaultsOSRD
+preplace inst Main_Block_C -pg 1 -lvl 1 -y 660 -defaultsOSRD
+preplace inst Parallel_computation_0 -pg 1 -lvl 2 -y 410 -defaultsOSRD
+preplace inst k_const_A_B_C -pg 1 -lvl 1 -y 70 -defaultsOSRD
+preplace netloc Main_Block_1_start_sig 1 1 2 400J 550 NJ
+preplace netloc DATA_IN_2_1 1 0 1 NJ
+preplace netloc Parallel_computation_0_const_sig 1 0 3 40 330 400J 270 820
+preplace netloc Main_Block_0_Com_W 1 1 1 460
+preplace netloc Main_Block_0_DATA_OUT 1 1 1 430
+preplace netloc Main_Block_1_Com_W 1 1 1 450
+preplace netloc Parallel_computation_0_found_A 1 2 1 NJ
+preplace netloc clk_0_1 1 0 2 20 340 410
+preplace netloc Main_Block_1_DATA_OUT 1 1 1 N
+preplace netloc Parallel_computation_0_found_B 1 2 1 NJ
+preplace netloc k_const_0_K_out 1 1 1 440
+preplace netloc Parallel_computation_0_found_C 1 2 1 NJ
+preplace netloc DATA_IN_0_1 1 0 1 NJ
+preplace netloc Parallel_computation_0_done 1 2 1 NJ
+preplace netloc Parallel_computation_0_Signal_W_A 1 0 3 50 320 390J 260 830
+preplace netloc rst_0_1 1 0 2 0J 350 420J
+preplace netloc DATA_IN_1_1 1 0 1 NJ
+preplace netloc Main_Block_2_Com_W 1 1 1 460
+preplace netloc Parallel_computation_0_Signal_W_B 1 0 3 50 560 NJ 560 830
+preplace netloc Main_Block_2_start_sig 1 1 2 NJ 640 NJ
+preplace netloc Main_Block_0_start_sig 1 1 2 NJ 210 NJ
+preplace netloc Parallel_computation_0_Signal_W_C 1 0 3 40 570 NJ 570 820
+preplace netloc Main_Block_2_DATA_OUT 1 1 1 480
+preplace netloc rst_1_1 1 0 1 -10
+preplace netloc in_hash_0_1 1 0 2 30J 540 470J
+preplace netloc stop_sig_0_1 1 0 1 10
+levelinfo -pg 1 -30 220 650 850 -top 0 -bot 750
+",
+}
+0
