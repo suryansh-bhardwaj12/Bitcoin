@@ -192,8 +192,9 @@ SHA-256 operates on:
 
 ## 👨‍💻 Author
 
-**Suryansh Bhardwaj**
-B.Tech (Electronics & ML)
+* **Aditya Agrawal**
+* **Suryansh Bharadwaj**
+
 
 ---
 
